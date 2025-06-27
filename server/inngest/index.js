@@ -1,5 +1,5 @@
 import { Inngest } from "inngest"
-import User from "../models/userSchema";
+import User from "../models/userSchema.js";
 //Create a client to send and receive events
 export const inngest = new Inngest({ id: "movie-ticket-booking" });
 
@@ -44,4 +44,4 @@ const syncUserUpdation = inngest.createFunction(
 )
 
 
-export const functions = [syncUserCreation,syncUserDeletionx,syncUserUpdation];
+export const functions = [syncUserCreation,syncUserDeletion,syncUserUpdation];
