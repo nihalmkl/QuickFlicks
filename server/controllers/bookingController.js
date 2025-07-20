@@ -75,6 +75,16 @@
 
          booking.paymentLink = session.url
          await booking.save()
+
+         //Run Inngest Sheduler Function to check payment status after 10 minuts
+
+         await inngest.send({
+            name:'app/checkpayment',
+            data:{
+               bookingId:booking._id.toString()
+            }
+         })
+
          res.json({success:true,url:session.url})
          
     } catch (error) {
