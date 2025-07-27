@@ -3,6 +3,7 @@ import cors from 'cors'
 import 'dotenv/config'
 import connectDB from './configs/db.js'
 import { clerkMiddleware } from '@clerk/express'
+import { ClerkExpressWithAuth } from '@clerk/express'
 import { serve } from "inngest/express";
 import { inngest, functions } from "./inngest/index.js"
 import showRouter from './routes/showRouter.js'
@@ -19,6 +20,7 @@ app.use('/api/stripe',express.raw({type:'application/json'}),stripeWebhooks)
 app.use(express.json())
 app.use(cors())
 app.use(clerkMiddleware())
+app.use(ClerkExpressWithAuth({ secretKey: process.env.CLERK_SECRET_KEY }))
 
 //API Routes
 app.get('/',(req,res)=> res.send('Sever is live'))

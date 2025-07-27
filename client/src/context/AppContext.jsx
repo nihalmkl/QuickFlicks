@@ -24,6 +24,7 @@ export const AppProvider = ({ children }) => {
                     Authorization: `Bearer ${await getToken()}`
                 }
             })
+            console.log('Hi:',data)
             console.log(data.isAdmin)
             setIsAdmin(data.isAdmin)
 
@@ -60,7 +61,7 @@ export const AppProvider = ({ children }) => {
             if (data.success) {
                 setFavoriteMovies(data.movies)
             } else {
-                toast.error(data.message)
+                console.error(error.message)
             }
         } catch (error) {
             console.error(error)
