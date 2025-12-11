@@ -1,11 +1,9 @@
 import Booking from "../models/bookingSchema.js"
 import Show from "../models/showSchema.js"
-
-//API to check if user is admin
+import User from "../models/userSchema.js"
 
 export const isAdmin = async(req,res)=>{
      let isAdmin = true
-     console.log('dd',isAdmin)
     res.json({success:true,isAdmin})
 }
 export const getDashboardData = async(req,res)=>{
@@ -36,6 +34,7 @@ export const getAllShows = async (req,res) => {
        const shows = await Show.find({showDateTime:{$gte:new Date()}})
        .populate('movie').sort({showDateTime:1}) 
        res.json({success:true,shows})
+       console.log(shows)
     } catch (error) {
         console.log(error.message)
         res.json({success:false,message:error.message})

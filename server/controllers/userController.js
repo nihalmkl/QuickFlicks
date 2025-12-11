@@ -19,31 +19,74 @@ export const getUserBookings = async (req,res) => {
 
 // To Update Favoite Movie in Clerk User Metadata
 
-export const updateFavorite = async (req,res) => {
-    try {
-        const {movieId} = req.body
-        const userId = req.auth().userId
-        const user = await clerkClient.users.getUser(userId)
+// export const updateFavorite = async (req,res) => {
+//     try {
+//         const {movieId} = req.body
+//         if (!movieId) {
+//             return res.status(400).json({ success: false, message: 'movieId is required' });
+//          }
+//         const userId = req.auth().userId
+//         console.log('favId',userId)
+//         const user = await clerkClient.users.getUser(userId)
 
-        if(!user.privateMetadata.favorites){
-            user.privateMetadata.favorites = []
-        }
-        if(!user.privateMetadata.favorites.includes(movieId)){
-            user.privateMetadata.favorites.push(movieId)
-        }else{
-                user.privateMetadata.favorites = user.privateMetadata.favorites
-                .filter(item => item !== movieId)
-        }
+//         if(!user.privateMetadata.favorites){
+//             user.privateMetadata.favorites = []
+//         }
+//         if(!user.privateMetadata.favorites.includes(movieId)){
+//             user.privateMetadata.favorites.push(movieId)
+//         }else{
+//                 user.privateMetadata.favorites = user.privateMetadata.favorites
+//                 .filter(item => item !== movieId)
+//         }
 
-        await clerkClient.users.updateUserMetadata(userId,
-            {privateMetadata:user.privateMetadata})
+//         await clerkClient.users.updateUserMetadata(userId,
+//             {privateMetadata:user.privateMetadata})
         
-        res.json({success:true,message:'Favorite Movie Updated'})
-    } catch (error) {
-         console.log(error.message)
-        res.json({success:false,message:error.message})
+//         res.json({success:true,message:'Favorite Movie Updated'})
+//     } catch (error) {
+//          console.log(error.message)
+//         res.json({success:false,message:error.message})
+//     }
+// }
+
+export const updateFavorite = async (req, res) => {
+  try {
+    const { movieId } = req.body
+    if (!movieId) {
+      return res.status(400).json({ success: false, message: 'movieId is required' })
     }
-}
+
+    const userId = req.auth().userId
+
+    const user = await clerkClient.users.getUser(userId)
+
+    // Ensure privateMetadata and favorites exist and are arrays
+    let favorites = Array.isArray(user.privateMetadata.favorites)
+      ? user.privateMetadata.favorites
+      : []
+
+    if (!favorites.includes(movieId)) {
+      favorites.push(movieId)
+    } else {
+      favorites = favorites.filter(item => item !== movieId)
+    }
+
+    // Update metadata
+    await clerkClient.users.updateUserMetadata(userId, {
+      privateMetadata: { ...user.privateMetadata, favorites }
+    })
+
+    return res.status(200).json({
+      success: true,
+      message: 'Favorite Movie Updated',
+      favorites 
+    })
+  } catch (error) {
+    console.log(error.message)
+    return res.status(500).json({ success: false, message: error.message })
+  }
+};
+
 
 
 

@@ -19,13 +19,16 @@ export const AppProvider = ({ children }) => {
 
     const fetchIsAdmin = async () => {
         try {
+            
+            const token = await getToken()
+            if (!token) {
+                throw new Error("Not authenticated: token missing");
+            }
             const { data } = await axios.get('/api/admin/is-admin', {
                 headers: {
-                    Authorization: `Bearer ${await getToken()}`
+                    Authorization: `Bearer ${token}`
                 }
             })
-            console.log('Hi:',data)
-            console.log(data.isAdmin)
             setIsAdmin(data.isAdmin)
 
             if (!data.isAdmin && location.pathname.startsWith('/admin')) {
@@ -41,6 +44,7 @@ export const AppProvider = ({ children }) => {
     const fetchShows = async () => {
         try {
             const { data } = await axios.get('/api/show/all')
+            console.log(data,"hdhdhddhhd")
             if (data.success) {
                 setShows(data.shows)
             } else {
@@ -61,7 +65,7 @@ export const AppProvider = ({ children }) => {
             if (data.success) {
                 setFavoriteMovies(data.movies)
             } else {
-                console.error(error.message)
+                console.error(data.message)
             }
         } catch (error) {
             console.error(error)
@@ -83,8 +87,8 @@ export const AppProvider = ({ children }) => {
 
 
     const value = {
-        axios,  isAdmin, shows, favoriteMovies, user,image_base_url,
-        fetchIsAdmin, getToken,navigate,fetchFavoriteMovies
+        axios, isAdmin, shows, favoriteMovies, user, image_base_url,
+        fetchIsAdmin, getToken, navigate, fetchFavoriteMovies
     }
 
     return (

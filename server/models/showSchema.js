@@ -1,6 +1,5 @@
 import mongoose from 'mongoose'
 
-
 const showSchema = mongoose.Schema({
     movie:{
         type:String,
@@ -20,7 +19,6 @@ const showSchema = mongoose.Schema({
         default:{}
     },
 },{minimize:false})
-
 
 const Show = mongoose.model('Show',showSchema)
 

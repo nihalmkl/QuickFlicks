@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react'
-import { dummyShowsData } from '../../assets/assets'
 import Loading from '../../components/Loading'
 import Title from '../../components/admin/Title'
 import { dateFormat } from '../../lib/dateFormat'
+import { useAppContext } from '../../context/AppContext'
 
 const ListShows = () => {
     const {axios,getToken,user} = useAppContext()
@@ -11,12 +11,15 @@ const ListShows = () => {
   const [loading,setLoading] = useState(true)
   const getAllShows = async ()=>{
     try {
-      
+      const token = await getToken()
      const {data} = await axios.get('api/admin/all-shows',  {
-      headers:{Authorization:`Bearer ${await getToken()}`}
+      headers:{Authorization:`Bearer ${token}`}
      })
-      setShows(data.shows)
-      setLoading(false)
+     console.log('movid',data.shows)
+     if(data){
+       setShows(data.shows)
+       setLoading(false)
+     }
     } catch (error) {
       console.error(error)
     }
