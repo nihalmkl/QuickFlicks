@@ -12,8 +12,8 @@ import userRouter from './routes/userRouter.js'
 import { stripeWebhooks } from './controllers/stripeWebhooks.js'
 
 const app = express()
-await connectDB()
 app.use(clerkMiddleware())
+await connectDB()
 const port = process.env.PORT || 3000
 app.use('/api/stripe',express.raw({type:'application/json'}),stripeWebhooks)
 //Middlewares
