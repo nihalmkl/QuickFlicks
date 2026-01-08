@@ -18,29 +18,34 @@ import { clerkClient} from '@clerk/express'
 
 export const protectAdmin = async (req, res, next) => {
   try {
-    const auth = req.auth?.()
+    // 1. Correctly access the auth object
+    const auth = req.auth; 
+     console.log('auth', auth)
+     console.log('userid',auth.userId)
+    // 2. Check if userId exists
     if (!auth || !auth.userId) {
       return res.status(401).json({
         success: false,
         message: "Authentication required",
-      })
+      });
     }
 
+    // 3. Fetch user from Clerk
     const user = await clerkClient.users.getUser(auth.userId);
     
-    if (!user || user.privateMetadata.role !== 'admin') {
+    if (user.privateMetadata.role !== 'admin') {
       return res.status(403).json({
         success: false,
         message: "Not authorized",
-      })
+      });
     }
 
-    next()
+    next();
   } catch (error) {
-    console.error('protectAdmin error:', error)
+    console.error('protectAdmin error:', error);
     return res.status(500).json({
       success: false,
-      message: "Server error",
-    })
+      message: "Internal Server Error",
+    });
   }
 }
